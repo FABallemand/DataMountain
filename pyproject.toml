@@ -1,0 +1,166 @@
+[project]
+name = "DataMoutain"
+version = "0.0.1"
+requires-python = ">=3.12"
+authors = [{ name = "Fabien ALLEMAND", email = "allemand.fabien@orange.fr" }]
+maintainers = [
+  { name = "Fabien ALLEMAND", email = "allemand.fabien@orange.fr" },
+]
+description = ""
+readme = "README.md"
+keywords = ["dashboard"]
+license = { text = "GNU GPLv3" }
+classifiers = [
+  "Intended Audience :: Developers",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
+]
+
+dependencies = [
+  "dash>=3.2.0",
+  "dash-bootstrap-components>=2.0.3",
+  "dash-extensions>=2.0.4",
+  "dash_mantine_components>=2.1.0",
+  "python-dotenv>=1.1.1",
+  "stravalib>=2.4",
+]
+
+[dependency-groups]
+dev = [
+  { include-group = "lint" },
+  { include-group = "utils" },
+  { include-group = "tests" },
+  { include-group = "doc" },
+]
+lint = [
+  "bandit>=1.8.5",
+  "isort>=6.0.1",
+  "mypy>=1.17.1",
+  "pre_commit>=4.2.0",
+  "pylint>=3.3.7",
+  "pyrefly>=0.22.1",
+  "ruff>=0.12.7",
+]
+utils = [
+  "ipykernel>=6.30.1",
+  "nbformat>=4.2.0",
+  "matplotlib>=3.10.3",
+  "matplotlib-inline>=0.1.7",
+  "pandas>=2.3.1",
+]
+tests = ["pytest>=8.4.2"]
+doc = [
+  "Sphinx>=8.2.3",
+  "sphinx-rtd-theme>=3.0.2",
+  "sphinxcontrib-applehelp>=2.0.0",
+  "sphinxcontrib-devhelp>=2.0.0",
+  "sphinxcontrib-htmlhelp>=2.1.0",
+  "sphinxcontrib-jquery>=4.1",
+  "sphinxcontrib-jsmath>=1.0.1",
+  "sphinxcontrib-qthelp>=2.0.0",
+  "sphinxcontrib-serializinghtml>=2.0.0",
+  "sphinx-autoapi>=3.6.0",
+]
+
+[project.urls]
+Homepage = "https://TODO"
+Documentation = "https://TODO"
+Repository = "https://github.com/FABallemand/DataMoutain"
+Issues = "https://github.com/FABallemand/DataMoutain/issues"
+Changelog = "https://TODO"
+
+[tool.isort]
+profile = "black"
+src_paths = ["isort", "src", "tests"]
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".git-rewrite",
+  ".hg",
+  ".ipynb_checkpoints",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".pyenv",
+  ".pytest_cache",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  ".vscode",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "site-packages",
+  "venv",
+  "Pipfile",
+  "Pipfile.lock",
+]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# Assume Python 3.12
+target-version = "py312"
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`) codes by default.
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+select = ["E4", "E7", "E9", "F"]
+ignore = []
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+# Enable auto-formatting of code examples in docstrings. Markdown,
+# reStructuredText code/literal blocks and doctests are all supported.
+#
+# This is currently disabled by default, but it is planned for this
+# to be opt-out in the future.
+docstring-code-format = true
+
+# Set the line length limit used when formatting code snippets in
+# docstrings.
+#
+# This only has an effect when the `docstring-code-format` setting is
+# enabled.
+docstring-code-line-length = "dynamic"
+
+[tool.bandit]
+skips = [
+  "B608",
+] # [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+exclude_dirs = ["tests"]
+
+[tool.pytest.ini_options]
+pythonpath = "src"
