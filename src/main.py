@@ -7,10 +7,10 @@ import os
 import sys
 
 import dash
-import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
-from dash import dcc, html
 from dotenv import load_dotenv
+
+from app.callbacks import register_callbacks
+from app.layout import Layout
 
 #######################################################################
 ## Environment Setup ##################################################
@@ -22,51 +22,16 @@ load_dotenv(override=True)  # Load environment variables from .env
 ## Dash Setup #########################################################
 #######################################################################
 
-
-## Layout #############################################################
-def serve_layout():
-    """
-    Define the layout of the application.
-    """
-    return dmc.MantineProvider(
-        html.Div(
-            [
-                dcc.Location(id="url"),
-                dcc.Interval(
-                    id="startup_interval", interval=10, n_intervals=0, max_intervals=1
-                ),  # Trigger once 10ms fater app start
-                # Products data stores
-                dcc.Store(id="products_data_store", data={}),
-                dcc.Store(id="products_profiles_store", storage_type="local", data={}),
-                # Stabi data stores
-                dcc.Store(id="stabi_data_store", data={}),
-                dcc.Store(id="stabi_profiles_store", storage_type="local", data={}),
-                # Time series data stores
-                dcc.Store(id="ts_data_store", data={}),
-                # Navbar(),
-                dash.page_container,
-            ],
-            style={
-                "display": "flex",
-                "flexDirection": "column",  # Stack children vertically
-                "overflow": "hidden",  # Prevent overall page scrolling
-            },
-        )
-    )
-
-
-## App ################################################################
 app = dash.Dash(
     __name__,
     use_pages=True,
-    external_stylesheets=[dbc.themes.BOOTSTRAP],
     suppress_callback_exceptions=True,
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
-    title="DataVista",
+    title="Data Moutain",
     url_base_pathname=os.getenv("BASE_PATHNAME"),
 )
-
-app.layout = serve_layout  # Set the layout of the application
+app.layout = Layout  # Set the layout of the application
+register_callbacks()  # Register application callbacks
 
 #######################################################################
 ## Launch App #########################################################
