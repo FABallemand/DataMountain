@@ -1,4 +1,4 @@
-# pylint: disable=ungrouped-imports
+# pylint: disable=ungrouped-imports, wrong-import-position
 """
 Main file to launch the Dash webapp.
 """
@@ -9,14 +9,15 @@ import sys
 import dash
 from dotenv import load_dotenv
 
-from app.callbacks import register_callbacks
-from app.layout import Layout
+load_dotenv(override=True)  # Load environment variables from .env file
+
+from app.callbacks import register_callbacks  # noqa: E402
+from app.layout import Layout  # noqa: E402
 
 #######################################################################
 ## Environment Setup ##################################################
 #######################################################################
 
-load_dotenv(override=True)  # Load environment variables from .env
 
 #######################################################################
 ## Dash Setup #########################################################

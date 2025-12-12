@@ -8,6 +8,7 @@ import os
 
 import dash
 import dash_mantine_components as dmc
+from dash import dcc
 from dash_iconify import DashIconify
 
 
@@ -61,10 +62,7 @@ def Navbar():
     """
     return dmc.AppShellNavbar(
         id="navbar",
-        children=[
-            "Navbar",
-            *[dmc.Skeleton(height=28, mt="sm", animate=False) for _ in range(15)],
-        ],
+        children=[],
         p="md",
     )
 
@@ -76,6 +74,14 @@ def Layout():
     return dmc.MantineProvider(
         dmc.AppShell(
             [
+                # Hidden components
+                dcc.Location(id="url"),
+                dcc.Store(id="athlete-store", data={}),
+                dcc.Store(id="activities-store", data={}),
+                dcc.Interval(
+                    id="app-start-interval", interval=10, max_intervals=1
+                ),  # Trigger once on app start
+                # Visible components
                 Header(),
                 Navbar(),
                 dmc.AppShellMain(dash.page_container),
