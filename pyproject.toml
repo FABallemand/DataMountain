@@ -28,6 +28,8 @@ dependencies = [
   "dash-ag-grid>=32.3.2",
   "stravalib>=2.4",
   "polars>=1.35.2",
+  "polyline>=2.0.4",
+  "ezgpx>=0.3.0",
 ]
 
 [dependency-groups]
