@@ -19,6 +19,7 @@ def Pages():
     return [
         dmc.Anchor(page["name"], href=os.getenv("BASE_PATHNAME") + page["path"][1:])
         for page in dash.page_registry.values()
+        if page["name"] not in ["Activity"]
     ]
 
 

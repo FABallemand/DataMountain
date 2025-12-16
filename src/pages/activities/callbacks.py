@@ -67,7 +67,10 @@ def register_callbacks():
                 dmc.Card(
                     children=[
                         dmc.CardSection(
-                            dcc.Graph(figure=ezgpx.plotters.PlotlyPlotter(gpx).plot())
+                            dcc.Graph(
+                                figure=ezgpx.plotters.PlotlyPlotter(gpx).plot(),
+                                config={"scrollZoom": False},  # "displayModeBar": False
+                            )
                         ),
                         dmc.Group(
                             [
@@ -82,6 +85,11 @@ def register_callbacks():
                             "Description?",
                             size="sm",
                             c="dimmed",
+                        ),
+                        dcc.Link(
+                            dmc.Text("Go to report", size="lg"),
+                            href=f"/datamountain/activity/{row[0]}",
+                            style={"textDecoration": "none"},
                         ),
                     ],
                     withBorder=True,
