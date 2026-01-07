@@ -2,6 +2,8 @@
 This module contains the layout of the Home page navbar.
 """
 
+import datetime
+
 import dash_mantine_components as dmc
 
 
@@ -40,6 +42,10 @@ def HomeNavbar():
                     "items": [
                         {"value": "Hike", "label": "Hike"},  # TODO check sport type
                         {"value": "Walk", "label": "Walk"},  # TODO check sport type
+                        {
+                            "value": "Snowshoe",
+                            "label": "Snowshoe",
+                        },  # TODO check sport type
                     ],
                 },
                 {
@@ -50,5 +56,19 @@ def HomeNavbar():
                 },
             ],
             value=["Run", "TrailRun"],
+        ),
+        dmc.DatePickerInput(
+            id={"page": "home", "component": "start-date-picker"},
+            label="Start Date",
+            valueFormat="DD/MM/YYYY",
+            value=(
+                datetime.datetime.now() - datetime.timedelta(days=30)
+            ).date(),  # TODO do something to load more data
+        ),
+        dmc.DatePickerInput(
+            id={"page": "home", "component": "stop-date-picker"},
+            label="Stop Date",
+            valueFormat="DD/MM/YYYY",
+            value=datetime.datetime.now().date(),
         ),
     ]

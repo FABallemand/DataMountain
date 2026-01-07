@@ -45,7 +45,7 @@ def register_callbacks():
             raise PreventUpdate
 
         print("Loading activities data...")
-        start_date = datetime.datetime.now() - datetime.timedelta(days=30)
+        start_date = datetime.datetime.now() - datetime.timedelta(weeks=10)
         activities = CLIENT.get_activities(after=start_date)
         data = []
         for activity in activities:
