@@ -9,29 +9,31 @@ import polyline
 from dash import Input, Output, callback, dcc
 from dash.exceptions import PreventUpdate
 
+from constants.colors import SPORT_TYPE_COLORS
+
 
 def register_callbacks():
     """
     Register callbacks of the Activities page.
     """
 
-    @callback(
-        Output({"page": "activities", "component": "activities-table"}, "rowData"),
-        [
-            Input("url", "pathname"),
-            Input("activities-store", "data"),
-        ],
-    )
-    def update_activities_table(pathname, data):
-        """
-        Update the activities table.
-        """
-        if pathname is None or "/activities" not in pathname:
-            raise PreventUpdate
-        if data is None or data == {}:
-            raise PreventUpdate
+    # @callback(
+    #     Output({"page": "activities", "component": "activities-table"}, "rowData"),
+    #     [
+    #         Input("url", "pathname"),
+    #         Input("activities-store", "data"),
+    #     ],
+    # )
+    # def update_activities_table(pathname, data):
+    #     """
+    #     Update the activities table.
+    #     """
+    #     if pathname is None or "/activities" not in pathname:
+    #         raise PreventUpdate
+    #     if data is None or data == {}:
+    #         raise PreventUpdate
 
-        return data
+    #     return data
 
     @callback(
         Output({"page": "activities", "component": "activities-list"}, "children"),
@@ -68,33 +70,43 @@ def register_callbacks():
                     children=[
                         dmc.CardSection(
                             dcc.Graph(
-                                figure=ezgpx.plotters.PlotlyPlotter(gpx).plot(),
+                                figure=ezgpx.plotters.PlotlyPlotter(gpx)
+                                .plot(color=SPORT_TYPE_COLORS[row[29]])
+                                .update_traces(hoverinfo="skip", hovertemplate=None),
                                 config={"scrollZoom": False},  # "displayModeBar": False
                             )
                         ),
-                        dmc.Group(
+                        dmc.Space(h=60),
+                        dmc.Stack(
                             [
-                                dmc.Text(row[26], fw=500),
-                                dmc.Badge(row[29], color="pink"),
+                                dmc.Badge(row[29], color=SPORT_TYPE_COLORS[row[29]]),
+                                dmc.Title(row[26], order=3),
+                                # dmc.Text(
+                                #     "Description?",
+                                #     size="sm",
+                                #     c="dimmed",
+                                # ),
+                                dmc.Anchor(
+                                    dmc.Button(
+                                        "Go to report",
+                                        fullWidth=True,
+                                        radius="md",
+                                    ),
+                                    href=f"/datamountain/activity/{row[0]}",
+                                    mt="auto",  # Push button to the bottom of the card
+                                ),
                             ],
-                            justify="space-between",
-                            mt="md",
-                            mb="xs",
-                        ),
-                        dmc.Text(
-                            "Description?",
-                            size="sm",
-                            c="dimmed",
-                        ),
-                        dcc.Link(
-                            dmc.Text("Go to report", size="lg"),
-                            href=f"/datamountain/activity/{row[0]}",
-                            style={"textDecoration": "none"},
+                            flex=1,
                         ),
                     ],
                     withBorder=True,
                     shadow="sm",
                     radius="md",
+                    style={
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "height": "100%",
+                    },
                 )
             )
 

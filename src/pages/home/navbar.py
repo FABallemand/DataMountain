@@ -44,7 +44,7 @@ def HomeNavbar():
                         {"value": "Walk", "label": "Walk"},  # TODO check sport type
                         {
                             "value": "Snowshoe",
-                            "label": "Snowshoe",
+                            "label": "Snow Shoe",
                         },  # TODO check sport type
                     ],
                 },
