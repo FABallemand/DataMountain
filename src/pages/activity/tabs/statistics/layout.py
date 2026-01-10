@@ -11,9 +11,9 @@ from .callbacks import register_callbacks
 register_callbacks()
 
 
-def StatisticsLayout():
+def LeftColLayout():
     """
-    Create the layout of the Statistics tab of the Activity page.
+    Create the layout of the left column of Statistics.
     """
     return dmc.Stack(
         [
@@ -42,7 +42,27 @@ def StatisticsLayout():
                 withColumnBorders=False,
             ),
             dmc.Title("Gear", order=2),
-            # TODO
+            dmc.Table(
+                id={
+                    "page": "activity",
+                    "tab": "statistics",
+                    "component": "gear-table",
+                },
+                striped=True,
+                highlightOnHover=True,
+                withTableBorder=True,
+                withColumnBorders=False,
+            ),
+        ]
+    )
+
+
+def RightColLayout():
+    """
+    Create the layout of the right column of Statistics.
+    """
+    return dmc.Stack(
+        [
             dmc.Title("Location", order=2),
             dmc.Table(
                 id={
@@ -79,5 +99,24 @@ def StatisticsLayout():
                 withTableBorder=True,
                 withColumnBorders=False,
             ),
-        ]
+        ],
+    )
+
+
+def StatisticsLayout():
+    """
+    Create the layout of the Statistics tab of the Activity page.
+    """
+    return dmc.Card(
+        dmc.Group(
+            [LeftColLayout(), RightColLayout()],
+            id={
+                "page": "activity",
+                "tab": "statistics",
+                "component": "stats-grid",
+            },
+            justify="space-around",
+            gap="xs",
+            grow=True,
+        )
     )

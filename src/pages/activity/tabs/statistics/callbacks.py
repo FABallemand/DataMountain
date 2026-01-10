@@ -36,6 +36,14 @@ def register_callbacks():
                 {
                     "page": "activity",
                     "tab": "statistics",
+                    "component": "gear-table",
+                },
+                "data",
+            ),
+            Output(
+                {
+                    "page": "activity",
+                    "tab": "statistics",
                     "component": "location-table",
                 },
                 "data",
@@ -114,8 +122,11 @@ def register_callbacks():
                         "Max Pace",
                         f"{60 / (activity_data['max_speed'].item() * 3.6):.2f}",
                     ],
-                    ["Average Speed", f"{activity_data['average_speed'].item():.2f}"],
-                    ["Max Speed", f"{activity_data['max_speed'].item():.2f}"],
+                    [
+                        "Average Speed",
+                        f"{activity_data['average_speed'].item() * 3.6:.2f}",
+                    ],
+                    ["Max Speed", f"{activity_data['max_speed'].item() * 3.6:.2f}"],
                     ["Average Cadence", activity_data["average_cadence"].item()],
                     ["Average Heartrate", activity_data["average_heartrate"].item()],
                     ["Max Heartrate", activity_data["max_heartrate"].item()],
@@ -128,6 +139,11 @@ def register_callbacks():
                     ["Device Watts", activity_data["device_watts"].item()],
                     ["Kilojoules", activity_data["kilojoules"].item()],
                     ["Suffer Score", activity_data["suffer_score"].item()],
+                ]
+            },
+            {
+                "body": [
+                    ["Gear ID", activity_data["gear_id"].item()],
                 ]
             },
             {

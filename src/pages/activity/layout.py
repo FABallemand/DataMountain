@@ -44,9 +44,5 @@ def layout(activity_id):  # pylint: disable=unused-argument
                 variant="outline",
             ),
         ],
-        id={
-            "page": "activity",
-            "component": "main-container",
-        },
         fluid=True,
     )

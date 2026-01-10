@@ -18,22 +18,26 @@ def OverviewLayout():
     """
     return dmc.Stack(
         [
-            dcc.Graph(
-                id={
-                    "page": "activity",
-                    "tab": "overview",
-                    "component": "graph",
-                },
+            dmc.Card(
+                dcc.Graph(
+                    id={
+                        "page": "activity",
+                        "tab": "overview",
+                        "component": "graph",
+                    },
+                ),
             ),
-            dmc.SimpleGrid(
-                id={
-                    "page": "activity",
-                    "tab": "overview",
-                    "component": "stats",
-                },
-                cols=4,
-                spacing="md",
-                verticalSpacing="md",
+            dmc.Card(
+                dmc.SimpleGrid(
+                    id={
+                        "page": "activity",
+                        "tab": "overview",
+                        "component": "stats",
+                    },
+                    cols=4,
+                    spacing="md",
+                    verticalSpacing="md",
+                ),
             ),
         ]
     )

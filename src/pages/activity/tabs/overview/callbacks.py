@@ -2,6 +2,8 @@
 This module contains the callbacks of the Overview tab of the Activity page.
 """
 
+import time
+
 import dash_mantine_components as dmc
 import ezgpx
 import polars as pl
@@ -89,13 +91,32 @@ def register_callbacks():
             raise PreventUpdate
 
         return [
-            dmc.Text(f"Distance: {activity_data['distance'].item()}"),
+            dmc.Text(f"Distance: {activity_data['distance'].item() / 1000:.2f} km"),
             dmc.Text(
-                f"Total Elevation Gain: {activity_data['total_elevation_gain'].item()}"
+                f"Total Elevation Gain: {activity_data['total_elevation_gain'].item():.2f} m"
             ),
-            dmc.Text(f"Elapsed Time: {activity_data['elapsed_time'].item()}"),
-            dmc.Text(f"Moving Time: {activity_data['moving_time'].item()}"),
-            # dmc.Text(f"Average Pace: {activity_data[""].item()}"),  # TODO
-            dmc.Text(f"Average Speed: {activity_data['average_speed'].item()}"),
-            dmc.Text(f"Average Heartrate: {activity_data['average_heartrate'].item()}"),
+            dmc.Text(
+                f"Elapsed Time: {
+                    time.strftime(
+                        '%H:%M:%S',
+                        time.gmtime(activity_data['elapsed_time'].item()),
+                    )
+                }"
+            ),
+            dmc.Text(
+                f"Moving Time: {
+                    time.strftime(
+                        '%H:%M:%S', time.gmtime(activity_data['moving_time'].item())
+                    )
+                }"
+            ),
+            dmc.Text(
+                f"Average Pace {60 / (activity_data['average_speed'].item() * 3.6):.2f} min/km"
+            ),
+            dmc.Text(
+                f"Average Speed: {activity_data['average_speed'].item() * 3.6:.2f} km/h"
+            ),
+            dmc.Text(
+                f"Average Heartrate: {activity_data['average_heartrate'].item()} bpm"
+            ),
         ]
