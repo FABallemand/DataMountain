@@ -14,37 +14,65 @@ def register_callbacks():
     Register callbacks of the Graphs tab of the Activity page.
     """
 
-    def create_speed_graph(activity_streams):
+    def safe_div(num, den):
+        try:
+            return num / den
+        except ZeroDivisionError:
+            return 0.0
+
+    def create_speed_graph(activity_streams, dist, speed):
         fig = go.Figure()
+
+        # Create hovertemplate and y-stream
+        hovertemplate = "Distance: %{x} m<br>" if dist else "Time: %{x}<br>"
+        if speed:
+            y = [v * 3.6 for v in activity_streams["velocity_smooth"].data]
+            hovertemplate += "<br>Speed: %{y:.2f} km/h"
+        else:
+            y = [
+                safe_div(60, v * 3.6) for v in activity_streams["velocity_smooth"].data
+            ]
+            hovertemplate += "<br>Pace: %{y:.2f} min/km"
+
         fig.add_trace(
             go.Scatter(
-                x=activity_streams["distance"].data,
-                y=activity_streams["velocity_smooth"].data,
-                hovertemplate="Distance: %{x}<br>Speed: %{y:.2f} km/h",
+                x=activity_streams["distance"].data
+                if dist
+                else activity_streams["time"].data,
+                y=y,
+                hovertemplate=hovertemplate,
                 line={"color": "#0000FF"},
             )
         )
         return fig
 
-    def create_ele_graph(activity_streams):
+    def create_ele_graph(activity_streams, dist):
         fig = go.Figure()
         fig.add_trace(
             go.Scatter(
-                x=activity_streams["distance"].data,
+                x=activity_streams["distance"].data
+                if dist
+                else activity_streams["time"].data,
                 y=activity_streams["altitude"].data,
-                hovertemplate="Distance: %{x}<br>Elevation: %{y:.2f} km/h",
+                hovertemplate="Distance: %{x} m<br>Elevation: %{y:.2f} m"  # TODO convert to km
+                if dist
+                else "Time: %{x}<br>Elevation: %{y:.2f} m",
                 line={"color": "#00FF00"},
             )
         )
         return fig
 
-    def create_heartrate_graph(activity_streams):
+    def create_heartrate_graph(activity_streams, dist):
         fig = go.Figure()
         fig.add_trace(
             go.Scatter(
-                x=activity_streams["distance"].data,
+                x=activity_streams["distance"].data
+                if dist
+                else activity_streams["time"].data,
                 y=activity_streams["heartrate"].data,
-                hovertemplate="Distance: %{x}<br>Heartrate: %{y:.2f} km/h",
+                hovertemplate="Distance: %{x} m<br>Heartrate: %{y:.2f} bpm"
+                if dist
+                else "Time: %{x}<br>Heartrate: %{y:.2f} bpm",
                 line={"color": "#FF0000"},
             )
         )
@@ -65,10 +93,28 @@ def register_callbacks():
                 "figure",
             ),
         ],
-        Input("url", "pathname"),
+        [
+            Input("url", "pathname"),
+            Input(
+                {
+                    "page": "activity",
+                    "tab": "graphs",
+                    "component": "time-dist-switch",
+                },
+                "checked",
+            ),
+            Input(
+                {
+                    "page": "activity",
+                    "tab": "graphs",
+                    "component": "pace-speed-switch",
+                },
+                "checked",
+            ),
+        ],
         State("activities-store", "data"),
     )
-    def update_graphs(pathname, data):
+    def update_graphs(pathname, dist, speed, data):
         """
         Update the graphs.
         """
@@ -92,7 +138,7 @@ def register_callbacks():
         )
 
         return (
-            create_speed_graph(activity_streams),
-            create_ele_graph(activity_streams),
-            create_heartrate_graph(activity_streams),
+            create_speed_graph(activity_streams, dist, speed),
+            create_ele_graph(activity_streams, dist),
+            create_heartrate_graph(activity_streams, dist),
         )

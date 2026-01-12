@@ -19,6 +19,34 @@ def GraphsLayout():
     return dmc.Stack(
         [
             dmc.Card(
+                dmc.Group(
+                    [
+                        dmc.Switch(
+                            id={
+                                "page": "activity",
+                                "tab": "graphs",
+                                "component": "time-dist-switch",
+                            },
+                            offLabel="Time",
+                            onLabel="Distance",
+                            checked="False",
+                            size="lg",
+                        ),
+                        dmc.Switch(
+                            id={
+                                "page": "activity",
+                                "tab": "graphs",
+                                "component": "pace-speed-switch",
+                            },
+                            offLabel="Pace",
+                            onLabel="Speed",
+                            checked="False",
+                            size="lg",
+                        ),
+                    ]
+                )
+            ),
+            dmc.Card(
                 dcc.Graph(
                     id={
                         "page": "activity",
