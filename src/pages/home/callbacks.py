@@ -9,6 +9,8 @@ import polars as pl
 from dash import Input, Output, callback
 from dash.exceptions import PreventUpdate
 
+from constants.colors import SPORT_TYPE_COLORS
+
 
 def register_callbacks():
     """
@@ -16,7 +18,7 @@ def register_callbacks():
     """
 
     def create_dist_graph(df):
-        sport_types = df.get_column("sport_type").unique().to_list()
+        sport_types = df.get_column("sport_type").unique().sort().to_list()
         # Create figure
         fig = go.Figure()
         for sport_type in sport_types:
@@ -29,6 +31,7 @@ def register_callbacks():
                     mode="lines+markers",
                     name=sport_type,
                     stackgroup="one",
+                    line={"color": SPORT_TYPE_COLORS[sport_type]},
                 )
             )
         fig.update_layout(
@@ -41,7 +44,7 @@ def register_callbacks():
         return fig
 
     def create_time_graph(df):
-        sport_types = df.get_column("sport_type").unique().to_list()
+        sport_types = df.get_column("sport_type").unique().sort().to_list()
         # Create figure
         fig = go.Figure()
         for sport_type in sport_types:
@@ -54,6 +57,7 @@ def register_callbacks():
                     mode="lines+markers",
                     name=sport_type,
                     stackgroup="one",
+                    line={"color": SPORT_TYPE_COLORS[sport_type]},
                 )
             )
         fig.update_layout(
@@ -66,7 +70,7 @@ def register_callbacks():
         return fig
 
     def create_ele_graph(df):
-        sport_types = df.get_column("sport_type").unique().to_list()
+        sport_types = df.get_column("sport_type").unique().sort().to_list()
         # Create figure
         fig = go.Figure()
         for sport_type in sport_types:
@@ -79,6 +83,7 @@ def register_callbacks():
                     mode="lines+markers",
                     name=sport_type,
                     stackgroup="one",
+                    line={"color": SPORT_TYPE_COLORS[sport_type]},
                 )
             )
         fig.update_layout(

@@ -26,7 +26,7 @@ def HomeNavbar():
                             "value": "GravelBikeRide",
                             "label": "Gravel Bike",
                         },  # TODO check sport type
-                        {"value": "MoutainBikeRide", "label": "Moutain Bike"},
+                        {"value": "MountainBikeRide", "label": "Moutain Bike"},
                         {"value": "Ride", "label": "Road Bike"},
                     ],
                 },
