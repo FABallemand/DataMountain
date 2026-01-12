@@ -14,6 +14,13 @@ def register_callbacks():
     Register callbacks of the Overview tab of the Activity page.
     """
 
+    def create_stat(value, unit):
+        if value is None:
+            return ""
+        if isinstance(value, float):
+            return f"{value:.2f} {unit}"
+        return f"{value} {unit}"
+
     @callback(
         [
             Output(
@@ -96,10 +103,13 @@ def register_callbacks():
             },
             {
                 "body": [
-                    ["Distance", f"{activity_data['distance'].item() / 1000:.2f}"],
+                    [
+                        "Distance",
+                        create_stat(activity_data["distance"].item() / 1000, "km"),
+                    ],
                     [
                         "Total Elevation Gain",
-                        activity_data["total_elevation_gain"].item(),
+                        create_stat(activity_data["total_elevation_gain"].item(), "m"),
                     ],
                     [
                         "Elapsed Time",
@@ -116,27 +126,53 @@ def register_callbacks():
                     ],
                     [
                         "Average Pace",
-                        f"{60 / (activity_data['average_speed'].item() * 3.6):.2f}",
+                        create_stat(
+                            60 / (activity_data["average_speed"].item() * 3.6), "min/km"
+                        ),
                     ],
                     [
                         "Max Pace",
-                        f"{60 / (activity_data['max_speed'].item() * 3.6):.2f}",
+                        create_stat(
+                            60 / (activity_data["max_speed"].item() * 3.6), "min/km"
+                        ),
                     ],
                     [
                         "Average Speed",
-                        f"{activity_data['average_speed'].item() * 3.6:.2f}",
+                        create_stat(
+                            activity_data["average_speed"].item() * 3.6, "km/h"
+                        ),
                     ],
-                    ["Max Speed", f"{activity_data['max_speed'].item() * 3.6:.2f}"],
+                    [
+                        "Max Speed",
+                        create_stat(activity_data["max_speed"].item() * 3.6, "km/h"),
+                    ],
                     ["Average Cadence", activity_data["average_cadence"].item()],
-                    ["Average Heartrate", activity_data["average_heartrate"].item()],
-                    ["Max Heartrate", activity_data["max_heartrate"].item()],
-                    ["Average Watts", activity_data["average_watts"].item()],
+                    [
+                        "Average Heartrate",
+                        create_stat(activity_data["average_heartrate"].item(), "bpm"),
+                    ],
+                    [
+                        "Max Heartrate",
+                        create_stat(activity_data["max_heartrate"].item(), "bpm"),
+                    ],
+                    [
+                        "Average Watts",
+                        create_stat(activity_data["average_watts"].item(), "W"),
+                    ],
                     [
                         "Weighted Average Watts",
-                        activity_data["weighted_average_watts"].item(),
+                        create_stat(
+                            activity_data["weighted_average_watts"].item(), "W"
+                        ),
                     ],
-                    ["Max Watts", activity_data["max_watts"].item()],
-                    ["Device Watts", activity_data["device_watts"].item()],
+                    [
+                        "Max Watts",
+                        create_stat(activity_data["max_watts"].item(), "W"),
+                    ],
+                    [
+                        "Device Watts",
+                        create_stat(activity_data["device_watts"].item(), "W"),
+                    ],
                     ["Kilojoules", activity_data["kilojoules"].item()],
                     ["Suffer Score", activity_data["suffer_score"].item()],
                 ]
