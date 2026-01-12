@@ -110,11 +110,6 @@ def StatisticsLayout():
     return dmc.Card(
         dmc.Group(
             [LeftColLayout(), RightColLayout()],
-            id={
-                "page": "activity",
-                "tab": "statistics",
-                "component": "stats-grid",
-            },
             justify="space-around",
             gap="xs",
             grow=True,

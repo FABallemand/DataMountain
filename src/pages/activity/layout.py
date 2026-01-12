@@ -6,6 +6,7 @@ import dash
 import dash_mantine_components as dmc
 
 from .callbacks import register_callbacks
+from .tabs.graphs.layout import GraphsLayout
 from .tabs.overview.layout import OverviewLayout
 from .tabs.statistics.layout import StatisticsLayout
 
@@ -35,10 +36,12 @@ def layout(activity_id):  # pylint: disable=unused-argument
                         [
                             dmc.TabsTab("Overview", value="overview"),
                             dmc.TabsTab("Statistics", value="statistics"),
+                            dmc.TabsTab("Graphs", value="graphs"),
                         ]
                     ),
                     dmc.TabsPanel(OverviewLayout(), value="overview"),
                     dmc.TabsPanel(StatisticsLayout(), value="statistics"),
+                    dmc.TabsPanel(GraphsLayout(), value="graphs"),
                 ],
                 value="overview",
                 variant="outline",

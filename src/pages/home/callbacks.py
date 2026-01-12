@@ -109,9 +109,9 @@ def register_callbacks():
             Input("activities-store", "data"),
         ],
     )
-    def update_dist_graph(_, sport_types, start_date, stop_date, data):
+    def update_graphs(_, sport_types, start_date, stop_date, data):
         """
-        Update the time graph.
+        Update the graphs.
         """
         if sport_types is None or sport_types == []:
             raise PreventUpdate
