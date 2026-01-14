@@ -11,6 +11,8 @@ import polyline
 from dash import Input, Output, State, callback
 from dash.exceptions import PreventUpdate
 
+from constants.colors import SPORT_TYPE_COLORS
+
 
 def register_callbacks():
     """
@@ -60,7 +62,9 @@ def register_callbacks():
         gpx._time_data = True  # TODO trick for plotting (fix ezgpx?)
         gpx._ele_data = True  # TODO trick for plotting (fix ezgpx?)
 
-        return ezgpx.plotters.PlotlyPlotter(gpx).plot()
+        return ezgpx.plotters.PlotlyPlotter(gpx).plot(
+            color=SPORT_TYPE_COLORS[activity_data[29]]
+        )
 
     @callback(
         Output(

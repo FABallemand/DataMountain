@@ -23,12 +23,14 @@ def layout(activity_id):  # pylint: disable=unused-argument
     """
     return dmc.Container(
         [
-            dmc.Title(
-                id={
-                    "page": "activity",
-                    "component": "title",
-                },
-                order=1,
+            dmc.Card(
+                dmc.Title(
+                    id={
+                        "page": "activity",
+                        "component": "title",
+                    },
+                    order=1,
+                ),
             ),
             dmc.Tabs(
                 [
