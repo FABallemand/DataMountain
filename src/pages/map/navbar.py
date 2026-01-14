@@ -1,7 +1,7 @@
 # pylint: disable=invalid-name
 # Disable invalid name to match dash PascalCase
 """
-This module contains the layout of the Home page navbar.
+This module contains the layout of the Map page navbar.
 """
 
 import datetime
@@ -9,14 +9,14 @@ import datetime
 import dash_mantine_components as dmc
 
 
-def HomeNavbar():
+def MapNavbar():
     """
-    Create the layout of the Home page navbar.
+    Create the layout of the Map page navbar.
     """
     return [
-        dmc.Title("Home", order=1),
+        dmc.Title("Map", order=1),
         dmc.MultiSelect(
-            id={"page": "home", "component": "sport-type-select"},
+            id={"page": "map", "component": "sport-type-select"},
             label="Sport Type",
             placeholder="Select sport type",
             searchable=True,
@@ -60,7 +60,7 @@ def HomeNavbar():
             value=["Run", "TrailRun"],
         ),
         dmc.DatePickerInput(
-            id={"page": "home", "component": "start-date-picker"},
+            id={"page": "map", "component": "start-date-picker"},
             label="Start Date",
             valueFormat="DD/MM/YYYY",
             value=(
@@ -68,7 +68,7 @@ def HomeNavbar():
             ).date(),  # TODO do something to load more data
         ),
         dmc.DatePickerInput(
-            id={"page": "home", "component": "stop-date-picker"},
+            id={"page": "map", "component": "stop-date-picker"},
             label="Stop Date",
             valueFormat="DD/MM/YYYY",
             value=datetime.datetime.now().date(),
