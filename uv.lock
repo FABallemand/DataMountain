@@ -481,6 +481,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "bandit" },
+    { name = "folium" },
     { name = "ipykernel" },
     { name = "isort" },
     { name = "matplotlib" },
@@ -529,6 +530,7 @@ tests = [
     { name = "pytest" },
 ]
 utils = [
+    { name = "folium" },
     { name = "ipykernel" },
     { name = "matplotlib" },
     { name = "matplotlib-inline" },
@@ -554,6 +556,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "bandit", specifier = ">=1.8.5" },
+    { name = "folium", specifier = ">=0.20.0" },
     { name = "ipykernel", specifier = ">=6.30.1" },
     { name = "isort", specifier = ">=6.0.1" },
     { name = "matplotlib", specifier = ">=3.10.3" },
@@ -600,6 +603,7 @@ lint = [
 ]
 tests = [{ name = "pytest", specifier = ">=8.4.2" }]
 utils = [
+    { name = "folium", specifier = ">=0.20.0" },
     { name = "ipykernel", specifier = ">=6.30.1" },
     { name = "matplotlib", specifier = ">=3.10.3" },
     { name = "matplotlib-inline", specifier = ">=0.1.7" },

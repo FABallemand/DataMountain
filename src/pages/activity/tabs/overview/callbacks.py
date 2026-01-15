@@ -26,7 +26,9 @@ def register_callbacks():
         ),
         [
             Input("url", "pathname"),
-            Input({"page": "activity", "component": "map-layer-select"}, "value"),
+            Input(
+                {"page": "activity", "component": "overview-map-layer-select"}, "value"
+            ),
         ],
         State("activities-store", "data"),
     )

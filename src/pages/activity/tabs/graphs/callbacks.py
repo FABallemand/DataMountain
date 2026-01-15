@@ -2,6 +2,8 @@
 This module contains the callbacks of the Graphs tab of the Activity page.
 """
 
+import folium
+import numpy as np
 import plotly.graph_objects as go
 from dash import Input, Output, State, callback
 from dash.exceptions import PreventUpdate
@@ -78,6 +80,23 @@ def register_callbacks():
         )
         return fig
 
+    def create_map(activity_streams, color):
+        lats = [point[0] for point in activity_streams["latlng"].data]
+        lons = [point[1] for point in activity_streams["latlng"].data]
+        center_lat = np.mean(lats)
+        center_lon = np.mean(lons)
+
+        m = folium.Map([center_lat, center_lon], zoom_start=15)
+
+        folium.ColorLine(
+            positions=list(zip(lats, lons)),
+            colors=activity_streams[color].data,
+            colormap=["y", "orange", "r"],
+            weight=5,
+        ).add_to(m)
+
+        return m.get_root().render()
+
     @callback(
         [
             Output(
@@ -91,6 +110,10 @@ def register_callbacks():
             Output(
                 {"page": "activity", "tab": "graphs", "component": "heartrate-graph"},
                 "figure",
+            ),
+            Output(
+                {"page": "activity", "tab": "graphs", "component": "map"},
+                "srcDoc",
             ),
         ],
         [
@@ -111,10 +134,17 @@ def register_callbacks():
                 },
                 "checked",
             ),
+            Input(
+                {
+                    "page": "activity",
+                    "component": "graphs-trace-color-select",
+                },
+                "value",
+            ),
         ],
         State("activities-store", "data"),
     )
-    def update_graphs(pathname, dist, speed, data):
+    def update_graphs(pathname, dist, speed, trace_color, data):
         """
         Update the graphs.
         """
@@ -134,11 +164,22 @@ def register_callbacks():
 
         activity_streams = CLIENT.get_activity_streams(
             activity_id,
-            ["time", "distance", "velocity_smooth", "altitude", "heartrate"],
+            [
+                "time",
+                "latlng",
+                "distance",
+                "altitude",
+                "velocity_smooth",
+                "heartrate",
+                "cadence",
+                "watts",
+                "grade_smooth",
+            ],
         )
 
         return (
             create_speed_graph(activity_streams, dist, speed),
             create_ele_graph(activity_streams, dist),
             create_heartrate_graph(activity_streams, dist),
+            create_map(activity_streams, trace_color),
         )

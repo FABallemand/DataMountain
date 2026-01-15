@@ -5,7 +5,7 @@ This module contains the layout of the Graphs tab of the Activity page.
 """
 
 import dash_mantine_components as dmc
-from dash import dcc
+from dash import dcc, html
 
 from .callbacks import register_callbacks
 
@@ -18,34 +18,6 @@ def GraphsLayout():
     """
     return dmc.Stack(
         [
-            dmc.Card(
-                dmc.Group(
-                    [
-                        dmc.Switch(
-                            id={
-                                "page": "activity",
-                                "tab": "graphs",
-                                "component": "time-dist-switch",
-                            },
-                            offLabel="Time",
-                            onLabel="Distance",
-                            checked="False",
-                            size="lg",
-                        ),
-                        dmc.Switch(
-                            id={
-                                "page": "activity",
-                                "tab": "graphs",
-                                "component": "pace-speed-switch",
-                            },
-                            offLabel="Pace",
-                            onLabel="Speed",
-                            checked="False",
-                            size="lg",
-                        ),
-                    ]
-                )
-            ),
             dmc.Card(
                 dcc.Graph(
                     id={
@@ -71,6 +43,16 @@ def GraphsLayout():
                         "tab": "graphs",
                         "component": "heartrate-graph",
                     },
+                ),
+            ),
+            dmc.Card(
+                html.Iframe(
+                    id={
+                        "page": "activity",
+                        "tab": "graphs",
+                        "component": "map",
+                    },
+                    style={"height": "70vh"},
                 ),
             ),
         ]

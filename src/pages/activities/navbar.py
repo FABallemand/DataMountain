@@ -6,7 +6,7 @@ This module contains the layout of the Activities page navbar.
 
 import dash_mantine_components as dmc
 
-from templates.components.selects import MapLayerSelect
+from templates.components.selects import PlotlyMapLayerSelect
 
 
 def ActivitiesNavbar():
@@ -15,5 +15,5 @@ def ActivitiesNavbar():
     """
     return [
         dmc.Title("Activities", order=1),
-        MapLayerSelect({"page": "activities", "component": "map-layer-select"}),
+        PlotlyMapLayerSelect({"page": "activities", "component": "map-layer-select"}),
     ]

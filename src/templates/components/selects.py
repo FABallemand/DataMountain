@@ -65,9 +65,9 @@ def SportTypeSelect(id: str | dict):
     )
 
 
-def MapLayerSelect(id: str | dict):
+def PlotlyMapLayerSelect(id: str | dict):
     """
-    Create a map layer select component.
+    Create a layer select component for Plotly maps.
 
     Args:
         id (str | dict): Component ID.
@@ -107,5 +107,33 @@ def MapLayerSelect(id: str | dict):
             {"value": "white-bg", "label": "None"},
         ],
         value="open-street-map",
+        leftSection=DashIconify(icon="ic:baseline-layers"),
+    )
+
+
+def FoliumMapLayerSelect(id: str | dict):
+    """
+    Create a layer select component for Folium maps.
+
+    Args:
+        id (str | dict): Component ID.
+
+    Returns:
+        dmc.Select: Map layer select component.
+    """
+    return dmc.Select(
+        id=id,
+        label="Map Layer",
+        placeholder="Select map layer",
+        searchable=True,
+        data=[
+            {"value": "OpenStreetMap", "label": "OpenStreetMap"},
+            {"value": "Cartodb Positron", "label": "Cartodb Positron"},
+            {
+                "value": "Cartodb dark_matter",
+                "label": "Cartodb dark_matter",
+            },
+        ],
+        value="OpenStreetMap",
         leftSection=DashIconify(icon="ic:baseline-layers"),
     )

@@ -9,7 +9,7 @@ import datetime
 import dash_mantine_components as dmc
 from dash_iconify import DashIconify
 
-from templates.components.selects import MapLayerSelect, SportTypeSelect
+from templates.components.selects import PlotlyMapLayerSelect, SportTypeSelect
 
 
 def MapNavbar():
@@ -35,5 +35,5 @@ def MapNavbar():
             value=datetime.datetime.now().date(),
             leftSection=DashIconify(icon="ic:baseline-calendar-month"),
         ),
-        MapLayerSelect({"page": "map", "component": "map-layer-select"}),
+        PlotlyMapLayerSelect({"page": "map", "component": "map-layer-select"}),
     ]
