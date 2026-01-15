@@ -13,6 +13,8 @@ dash.register_page(__name__, name="Map", path="/map", order=3)
 register_callbacks()
 
 layout = dmc.Container(
-    dmc.Card(dcc.Graph(id={"page": "map", "component": "map"})),
+    dmc.Card(
+        dcc.Graph(id={"page": "map", "component": "map"}, style={"height": "80vh"})
+    ),
     fluid=True,
 )

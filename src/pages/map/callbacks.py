@@ -26,10 +26,11 @@ def register_callbacks():
             Input({"page": "map", "component": "sport-type-select"}, "value"),
             Input({"page": "map", "component": "start-date-picker"}, "value"),
             Input({"page": "map", "component": "stop-date-picker"}, "value"),
+            Input({"page": "map", "component": "map-layer-select"}, "value"),
             Input("activities-store", "data"),
         ],
     )
-    def update_graph(_, sport_types, start_date, stop_date, data):
+    def update_graph(_, sport_types, start_date, stop_date, map_layer, data):
         """
         Update the graph.
         """
@@ -71,7 +72,7 @@ def register_callbacks():
             margin={"l": 0, "t": 0, "b": 0, "r": 0},
             map={
                 "center": {"lon": np.mean(center_lons), "lat": np.mean(center_lats)},
-                "style": "open-street-map",
+                "style": map_layer,
                 "zoom": 10,
             },
             title={"text": "test"},
