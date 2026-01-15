@@ -25,19 +25,8 @@ def OverviewLayout():
                         "tab": "overview",
                         "component": "graph",
                     },
+                    style={"height": "70vh"},
                 ),
-            ),
-            dmc.Card(
-                dmc.SimpleGrid(
-                    id={
-                        "page": "activity",
-                        "tab": "overview",
-                        "component": "stats",
-                    },
-                    cols=4,
-                    spacing="md",
-                    verticalSpacing="md",
-                ),
-            ),
+            )
         ]
     )

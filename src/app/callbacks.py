@@ -8,6 +8,8 @@ import os
 from dash import Input, Output, State, callback, clientside_callback
 from dash.exceptions import PreventUpdate
 
+from pages.activities.navbar import ActivitiesNavbar
+from pages.activity.navbar import ActivityNavbar
 from pages.home.navbar import HomeNavbar
 from pages.map.navbar import MapNavbar
 from strava.client import CLIENT
@@ -67,6 +69,10 @@ def register_callbacks():
 
         if pathname == f"{BASE_PATHNAME}":
             return HomeNavbar()
+        if pathname == f"{BASE_PATHNAME}activities":
+            return ActivitiesNavbar()
+        if pathname.startswith(f"{BASE_PATHNAME}activity/"):
+            return ActivityNavbar()
         if pathname == f"{BASE_PATHNAME}map":
             return MapNavbar()
         return []

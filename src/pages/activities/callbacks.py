@@ -3,13 +3,12 @@ This module contains the callbacks of the Activities page.
 """
 
 import dash_mantine_components as dmc
-import ezgpx
 import polars as pl
-import polyline
 from dash import Input, Output, callback, dcc
 from dash.exceptions import PreventUpdate
 
 from constants.colors import SPORT_TYPE_COLORS
+from utils.maps import create_map
 
 
 def register_callbacks():
@@ -39,10 +38,11 @@ def register_callbacks():
         Output({"page": "activities", "component": "activities-list"}, "children"),
         [
             Input("url", "pathname"),
+            Input({"page": "activities", "component": "map-layer-select"}, "value"),
             Input("activities-store", "data"),
         ],
     )
-    def update_activities_list(pathname, data):
+    def update_activities_list(pathname, map_layer, data):
         """
         Update the activities list.
         """
@@ -53,26 +53,17 @@ def register_callbacks():
 
         activities = []
         for row in pl.DataFrame(data).iter_rows():
-            decoded_polyline = polyline.decode(row[22]["summary_polyline"])
-            gpx = ezgpx.GPX()
-            trk = ezgpx.gpx_elements.Track()
-            trk_seg = ezgpx.gpx_elements.TrackSegment()
-            for lat, lon in decoded_polyline:
-                trk_seg.trkpt.append(
-                    ezgpx.gpx_elements.WayPoint(tag="trkpt", lat=lat, lon=lon)
-                )
-            trk.trkseg.append(trk_seg)
-            gpx.gpx.trk.append(trk)
-            gpx._time_data = True  # TODO trick for plotting (fix ezgpx?)
-            gpx._ele_data = True  # TODO trick for plotting (fix ezgpx?)
             activities.append(
                 dmc.Card(
                     children=[
                         dmc.CardSection(
                             dcc.Graph(
-                                figure=ezgpx.plotters.PlotlyPlotter(gpx)
-                                .plot(color=SPORT_TYPE_COLORS[row[29]])
-                                .update_traces(hoverinfo="skip", hovertemplate=None),
+                                figure=create_map(
+                                    polyline_str=row[22]["summary_polyline"],
+                                    name=row[26],
+                                    color=SPORT_TYPE_COLORS.get(row[29], "#FFA800"),
+                                    map_layer=map_layer,
+                                ).update_traces(hoverinfo="skip", hovertemplate=None),
                                 config={"scrollZoom": False},  # "displayModeBar": False
                             )
                         ),

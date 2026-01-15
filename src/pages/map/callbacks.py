@@ -4,14 +4,12 @@ This module contains the callbacks of the Map page.
 
 import datetime
 
-import numpy as np
-import plotly.graph_objects as go
 import polars as pl
 from dash import Input, Output, callback
 from dash.exceptions import PreventUpdate
 
 from constants.colors import SPORT_TYPE_COLORS
-from utils.maps import create_scattermap
+from utils.maps import create_map
 
 
 def register_callbacks():
@@ -55,27 +53,9 @@ def register_callbacks():
             )
         )
 
-        fig = go.Figure()
-        center_lats = []
-        center_lons = []
-        for row in df.iter_rows():
-            scattermap, center_lat, center_lon = create_scattermap(
-                row[22]["summary_polyline"],
-                name=row[26],
-                color=SPORT_TYPE_COLORS.get(row[29], "#FFA800"),
-            )
-            fig.add_trace(scattermap)
-            center_lats.append(center_lat)
-            center_lons.append(center_lon)
-
-        fig.update_layout(
-            margin={"l": 0, "t": 0, "b": 0, "r": 0},
-            map={
-                "center": {"lon": np.mean(center_lons), "lat": np.mean(center_lats)},
-                "style": map_layer,
-                "zoom": 10,
-            },
-            title={"text": "test"},
+        return create_map(
+            polyline_str=df["summary_polyline"].to_list(),
+            name=df["name"].to_list(),
+            color=[SPORT_TYPE_COLORS.get(st, "#FFA800") for st in df["sport_type"]],
+            map_layer=map_layer,
         )
-
-        return fig
