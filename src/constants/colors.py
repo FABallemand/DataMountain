@@ -2,6 +2,8 @@
 This module contains the color constants.
 """
 
+import branca.colormap as cm
+
 # Cycling
 GRAVELBIKERIDE = "#fc6f03"
 MOUTAINBIKERIDE = "#fc9d03"
@@ -31,4 +33,16 @@ SPORT_TYPE_COLORS = {
     "Snowshoe": SNOWSHOE,
     # Other
     "Swim": SWIM,
+}
+
+
+# Colormaps
+COLORMAPS = {
+    "distance": cm.LinearColormap(["gold", "black"]),
+    "altitude": cm.LinearColormap(["midnightblue", "skyblue"]),
+    "velocity_smooth": cm.LinearColormap(["teal", "cyan"]),
+    "heartrate": cm.LinearColormap(["lightcoral", "red"]),
+    "cadence": cm.LinearColormap(["pink", "purple"]),
+    "watts": cm.LinearColormap(["moccasin", "darkorange"]),
+    "grade_smooth": cm.LinearColormap(["crimson", "black"]),
 }

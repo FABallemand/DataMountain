@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 from dash import Input, Output, State, callback
 from dash.exceptions import PreventUpdate
 
+from constants.colors import COLORMAPS
 from strava.client import CLIENT
 
 
@@ -88,12 +89,18 @@ def register_callbacks():
 
         m = folium.Map([center_lat, center_lon], zoom_start=15)
 
+        colormap = COLORMAPS[color].scale(
+            min(activity_streams[color].data), max(activity_streams[color].data)
+        )
+
         folium.ColorLine(
             positions=list(zip(lats, lons)),
             colors=activity_streams[color].data,
-            colormap=["y", "orange", "r"],
+            colormap=colormap,
             weight=5,
         ).add_to(m)
+
+        m.add_child(colormap)
 
         return m.get_root().render()
 
@@ -152,13 +159,6 @@ def register_callbacks():
             raise PreventUpdate
         if data is None or data == {}:
             raise PreventUpdate
-
-        # activity_data = pl.DataFrame(data).filter(
-        #     pl.col("id") == int(pathname.split("/")[-1])
-        # )
-
-        # if activity_data.is_empty():
-        #     raise PreventUpdate
 
         activity_id = int(pathname.split("/")[-1])
 

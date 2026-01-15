@@ -41,7 +41,7 @@ def ActivityNavbar():
                             offLabel="Time",
                             onLabel="Distance",
                             checked="False",
-                            size="lg",
+                            size="md",
                         ),
                         dmc.Switch(
                             id={
@@ -52,7 +52,7 @@ def ActivityNavbar():
                             offLabel="Pace",
                             onLabel="Speed",
                             checked="False",
-                            size="lg",
+                            size="md",
                         ),
                         FoliumMapLayerSelect(
                             {
