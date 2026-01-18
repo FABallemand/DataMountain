@@ -46,3 +46,20 @@ COLORMAPS = {
     "watts": cm.LinearColormap(["moccasin", "darkorange"]),
     "grade_smooth": cm.LinearColormap(["crimson", "black"]),
 }
+
+# Months
+
+MONTH_COLORS = {
+    1: "#D6E6F2",  # January
+    2: "#C9DDF0",  # February
+    3: "#CFE8E4",  # March
+    4: "#DFF1D6",  # April
+    5: "#F1F7C4",  # May
+    6: "#FFF1C1",  # June
+    7: "#FFD6C9",  # July
+    8: "#FFB7B2",  # August
+    9: "#FFD8A8",  # September
+    10: "#F4C2C2",  # October
+    11: "#E6CFE6",  # November
+    12: "#D8DFF0",  # December
+}

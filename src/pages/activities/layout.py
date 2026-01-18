@@ -9,7 +9,7 @@ import dash_mantine_components as dmc
 
 from .callbacks import register_callbacks
 
-dash.register_page(__name__, name="Activities", path="/activities", order=2)
+dash.register_page(__name__, name="Activities", path="/activities", order=3)
 
 register_callbacks()
 

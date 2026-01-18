@@ -8,7 +8,7 @@ from dash import dcc
 
 from .callbacks import register_callbacks
 
-dash.register_page(__name__, name="Map", path="/map", order=3)
+dash.register_page(__name__, name="Map", path="/map", order=4)
 
 register_callbacks()
 
