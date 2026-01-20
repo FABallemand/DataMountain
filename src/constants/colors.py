@@ -47,8 +47,9 @@ COLORMAPS = {
     "grade_smooth": cm.LinearColormap(["crimson", "black"]),
 }
 
-# Months
+DIFFICULTY_COLORMAP = cm.LinearColormap(["green", "yellow", "orange", "red"])
 
+# Months
 MONTH_COLORS = {
     1: "#D6E6F2",  # January
     2: "#C9DDF0",  # February

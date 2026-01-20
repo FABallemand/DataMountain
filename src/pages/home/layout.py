@@ -25,7 +25,7 @@ layout = dmc.Container(
                 dmc.Card(
                     dcc.Graph(id={"page": "home", "component": "ele-graph"}), h="30%"
                 ),
-            ]
+            ],
         ),
     ],
     fluid=True,

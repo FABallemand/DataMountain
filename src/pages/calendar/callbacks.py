@@ -9,14 +9,9 @@ import polars as pl
 from dash import Input, Output, callback
 from dash.exceptions import PreventUpdate
 
-from constants.colors import MONTH_COLORS, SPORT_TYPE_COLORS
-
-
-def iso_weeks_in_year(year: int) -> int:
-    """
-    Return number of ISO calendar weeks in a given year.
-    """
-    return datetime.date(year, 12, 28).isocalendar().week
+from constants.colors import DIFFICULTY_COLORMAP, MONTH_COLORS, SPORT_TYPE_COLORS
+from utils.dataframes import create_weekly_df
+from utils.dates import iso_weeks_in_year
 
 
 def register_callbacks():
@@ -62,6 +57,8 @@ def register_callbacks():
             pl.DataFrame(data)
             .select(
                 [
+                    "id",
+                    "type",
                     "sport_type",
                     "start_date_local",
                     "distance",
@@ -75,10 +72,43 @@ def register_callbacks():
             )
             .with_columns(
                 pl.col("start_date_local").dt.iso_year().alias("iso_year"),
-                pl.col("start_date_local").dt.week().alias("week"),
+                pl.col("start_date_local").dt.week().alias("iso_week"),
                 pl.col("start_date_local").dt.weekday().alias("weekday"),
             )
         )
+
+        # Create weekly dataframe
+        tmp = (
+            create_weekly_df(
+                pl.DataFrame(data),
+                sport_types,
+                start_date=df.get_column("start_date_local").min().date(),
+                stop_date=df.get_column("start_date_local").max().date()
+                + datetime.timedelta(days=1),  # Include last day
+            )
+            .group_by(["iso_year", "iso_week", "type"])
+            .agg(
+                [
+                    pl.col("distance").sum(),
+                    pl.col("elapsed_time").sum(),
+                    pl.col("total_elevation_gain").sum(),
+                ]
+            )
+        )
+        weekly_df = pl.concat(
+            [
+                tmp,
+                tmp.group_by("iso_year", "iso_week")
+                .sum()
+                .with_columns(pl.col("type").fill_null(pl.lit("Total"))),
+            ]
+        )
+
+        # Scale difficulty colormap based on weekly distance
+        weekly_max_dist = (
+            weekly_df.filter(pl.col("type") == "Total").get_column("distance").max()
+        )
+        weekly_difficulty_colormap = DIFFICULTY_COLORMAP.scale(0, weekly_max_dist)
 
         body_children = []
         # Iterate over ISO years
@@ -88,17 +118,17 @@ def register_callbacks():
             df_year = df.filter(pl.col("iso_year") == iso_year)
             # Iterate over ISO calendar weeks
             last_week = (
-                df_year.get_column("week").max()
+                df_year.get_column("iso_week").max()
                 if iso_year == df.get_column("iso_year").max()
                 else iso_weeks_in_year(iso_year)
             )
             first_week = (
-                df_year.get_column("week").min()
+                df_year.get_column("iso_week").min()
                 if iso_year == df.get_column("iso_year").min()
                 else 0
             )
-            for week in range(last_week, first_week, -1):
-                df_week = df_year.filter(pl.col("week") == week)
+            for iso_week in range(last_week, first_week, -1):
+                df_week = df_year.filter(pl.col("iso_week") == iso_week)
                 if df_week.height == 0:
                     body_children.append(
                         dmc.TableTr(
@@ -107,7 +137,7 @@ def register_callbacks():
                                     "",
                                     bg=MONTH_COLORS[
                                         datetime.datetime.fromisocalendar(
-                                            iso_year, week, 1
+                                            iso_year, iso_week, 1
                                         ).month
                                     ],
                                 ),
@@ -115,7 +145,7 @@ def register_callbacks():
                                     "",
                                     bg=MONTH_COLORS[
                                         datetime.datetime.fromisocalendar(
-                                            iso_year, week, 2
+                                            iso_year, iso_week, 2
                                         ).month
                                     ],
                                 ),
@@ -123,7 +153,7 @@ def register_callbacks():
                                     "",
                                     bg=MONTH_COLORS[
                                         datetime.datetime.fromisocalendar(
-                                            iso_year, week, 3
+                                            iso_year, iso_week, 3
                                         ).month
                                     ],
                                 ),
@@ -131,7 +161,7 @@ def register_callbacks():
                                     "",
                                     bg=MONTH_COLORS[
                                         datetime.datetime.fromisocalendar(
-                                            iso_year, week, 4
+                                            iso_year, iso_week, 4
                                         ).month
                                     ],
                                 ),
@@ -139,7 +169,7 @@ def register_callbacks():
                                     "",
                                     bg=MONTH_COLORS[
                                         datetime.datetime.fromisocalendar(
-                                            iso_year, week, 5
+                                            iso_year, iso_week, 5
                                         ).month
                                     ],
                                 ),
@@ -147,7 +177,7 @@ def register_callbacks():
                                     "",
                                     bg=MONTH_COLORS[
                                         datetime.datetime.fromisocalendar(
-                                            iso_year, week, 6
+                                            iso_year, iso_week, 6
                                         ).month
                                     ],
                                 ),
@@ -155,11 +185,13 @@ def register_callbacks():
                                     "",
                                     bg=MONTH_COLORS[
                                         datetime.datetime.fromisocalendar(
-                                            iso_year, week, 7
+                                            iso_year, iso_week, 7
                                         ).month
                                     ],
                                 ),
-                                dmc.TableTd(f"Calendar Week {week}", bg="lightgray"),
+                                dmc.TableTd(
+                                    f"Calendar Week {iso_week}", bg="lightgray"
+                                ),
                             ]
                         )
                     )
@@ -174,7 +206,7 @@ def register_callbacks():
                                     "",
                                     bg=MONTH_COLORS[
                                         datetime.datetime.fromisocalendar(
-                                            iso_year, week, weekday
+                                            iso_year, iso_week, weekday
                                         ).month
                                     ],
                                 )
@@ -187,11 +219,14 @@ def register_callbacks():
                                 )
                                 distance_km = activity["distance"] / 1000
                                 day_children.append(
-                                    dmc.Badge(
-                                        f"{activity['sport_type'].capitalize()}: {distance_km:.2f} km",
-                                        color=color,
-                                        variant="filled",
-                                        style={"margin": "2px"},
+                                    dmc.Anchor(
+                                        dmc.Badge(
+                                            f"{activity['sport_type']}: {distance_km:.2f} km",
+                                            color=color,
+                                            variant="filled",
+                                            style={"margin": "2px"},
+                                        ),
+                                        href=f"/datamountain/activity/{activity['id']}",
                                     )
                                 )
                             row_children.append(
@@ -199,12 +234,62 @@ def register_callbacks():
                                     day_children,
                                     bg=MONTH_COLORS[
                                         datetime.datetime.fromisocalendar(
-                                            iso_year, week, weekday
+                                            iso_year, iso_week, weekday
                                         ).month
                                     ],
                                 )
                             )
-                    row_children.append(dmc.TableTd(f"Calendar Week {week}"))
+                    weekly_running_dist = (
+                        weekly_df.filter(
+                            (pl.col("type") == "Run")
+                            & (pl.col("iso_year") == iso_year)
+                            & (pl.col("iso_week") == iso_week)
+                        )
+                        .get_column("distance")
+                        .item()
+                        if any(x in ["Run", "TrailRun"] for x in sport_types)
+                        else 0.0
+                    )
+                    weekly_cycling_dist = (
+                        weekly_df.filter(
+                            (pl.col("type") == "Ride")
+                            & (pl.col("iso_year") == iso_year)
+                            & (pl.col("iso_week") == iso_week)
+                        )
+                        .get_column("distance")
+                        .item()
+                        if any(
+                            x in ["Ride", "MountainBikeRide", "GravelBikeRide"]
+                            for x in sport_types
+                        )
+                        else 0.0
+                    )
+                    weekly_total_dist = (
+                        weekly_df.filter(
+                            (pl.col("type") == "Total")
+                            & (pl.col("iso_year") == iso_year)
+                            & (pl.col("iso_week") == iso_week)
+                        )
+                        .get_column("distance")
+                        .item()
+                        if len(sport_types) > 0
+                        else 0.0
+                    )
+                    row_children.append(
+                        dmc.TableTd(
+                            dmc.Stack(
+                                [
+                                    dmc.Text(f"Calendar Week {iso_week}"),
+                                    dmc.Text(f"Running: {weekly_running_dist:.2f} km"),
+                                    dmc.Text(f"Cycling: {weekly_cycling_dist:.2f} km"),
+                                    dmc.Text(f"Total: {weekly_total_dist:.2f} km"),
+                                ]
+                            ),
+                            bg=weekly_difficulty_colormap(
+                                weekly_total_dist
+                            ),  # TODO find better way to measure difficulty (activity coefficients, elevation gain...)
+                        )
+                    )
                     body_children.append(dmc.TableTr(row_children))
 
         # Create table body
