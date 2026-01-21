@@ -54,7 +54,9 @@ def register_callbacks():
         )
 
         return create_map(
-            polyline_str=df["summary_polyline"].to_list(),
+            polyline_str=[
+                a["summary_polyline"] for a in df.get_column("map").to_list()
+            ],
             name=df["name"].to_list(),
             color=[SPORT_TYPE_COLORS.get(st, "#FFA800") for st in df["sport_type"]],
             map_layer=map_layer,
