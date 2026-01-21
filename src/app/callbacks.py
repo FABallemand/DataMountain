@@ -37,9 +37,27 @@ def register_callbacks():
     )  # Set the color scheme of the application based on the switch state
 
     @callback(
+        Output("athlete-store", "data"),
+        Input("app-start-interval", "n_intervals"),
+        State("athlete-store", "data"),
+        prevent_initial_call=True,
+    )
+    def load_athlete(_, data):
+        """
+        Update the athlete table with data from Strava client.
+        """
+        if data is not None and data != {}:
+            raise PreventUpdate
+
+        print("Loading athlete data...")
+        athlete = CLIENT.get_athlete()
+        return athlete.model_dump() | athlete.stats.model_dump()
+
+    @callback(
         Output("activities-store", "data"),
         Input("app-start-interval", "n_intervals"),
         State("activities-store", "data"),
+        prevent_initial_call=True,
     )
     def load_activities(_, data):
         """
