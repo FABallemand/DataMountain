@@ -67,6 +67,9 @@ def create_weekly_df(
 
     Args:
         df (pl.DataFrame): Activities dataframe.
+        sport_types (list): List of sport types to keep.
+        start_date (datetime.date): Start date.
+        stop_date (datetime.date): Stop date.
 
     Returns:
         pl.DataFrame: Weekly dataframe.

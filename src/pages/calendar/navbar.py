@@ -13,7 +13,9 @@ def CalendarNavbar():
     """
     Create the layout of the Calendar page navbar.
     """
-    return [
-        dmc.Title("Calendar", order=1),
-        SportTypeSelect({"page": "calendar", "component": "sport-type-select"}),
-    ]
+    return dmc.Stack(
+        [
+            dmc.Title("Calendar", order=1),
+            SportTypeSelect({"page": "calendar", "component": "sport-type-select"}),
+        ]
+    )

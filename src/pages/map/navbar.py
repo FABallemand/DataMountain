@@ -16,24 +16,26 @@ def MapNavbar():
     """
     Create the layout of the Map page navbar.
     """
-    return [
-        dmc.Title("Map", order=1),
-        SportTypeSelect({"page": "map", "component": "sport-type-select"}),
-        dmc.DatePickerInput(
-            id={"page": "map", "component": "start-date-picker"},
-            label="Start Date",
-            valueFormat="DD/MM/YYYY",
-            value=(
-                datetime.datetime.now() - datetime.timedelta(days=30)
-            ).date(),  # TODO do something to load more data
-            leftSection=DashIconify(icon="ic:baseline-calendar-month"),
-        ),
-        dmc.DatePickerInput(
-            id={"page": "map", "component": "stop-date-picker"},
-            label="Stop Date",
-            valueFormat="DD/MM/YYYY",
-            value=datetime.datetime.now().date(),
-            leftSection=DashIconify(icon="ic:baseline-calendar-month"),
-        ),
-        PlotlyMapLayerSelect({"page": "map", "component": "map-layer-select"}),
-    ]
+    return dmc.Stack(
+        [
+            dmc.Title("Map", order=1),
+            SportTypeSelect({"page": "map", "component": "sport-type-select"}),
+            dmc.DatePickerInput(
+                id={"page": "map", "component": "start-date-picker"},
+                label="Start Date",
+                valueFormat="DD/MM/YYYY",
+                value=(
+                    datetime.datetime.now() - datetime.timedelta(days=30)
+                ).date(),  # TODO do something to load more data
+                leftSection=DashIconify(icon="ic:baseline-calendar-month"),
+            ),
+            dmc.DatePickerInput(
+                id={"page": "map", "component": "stop-date-picker"},
+                label="Stop Date",
+                valueFormat="DD/MM/YYYY",
+                value=datetime.datetime.now().date(),
+                leftSection=DashIconify(icon="ic:baseline-calendar-month"),
+            ),
+            PlotlyMapLayerSelect({"page": "map", "component": "map-layer-select"}),
+        ]
+    )

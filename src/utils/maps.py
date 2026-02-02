@@ -36,39 +36,47 @@ def compute_map_coords(
         dict[str, float]: Dictionary of reference coordinates for map
             plotting.
     """
+    if len(center_lats) == 1:
+        return {
+            "center_lat": center_lats[0],
+            "center_lon": center_lons[0],
+            "min_lat": min_lats[0],
+            "min_lon": min_lons[0],
+            "max_lat": max_lats[0],
+            "max_lon": max_lons[0],
+        }
     df = (
         pl.DataFrame(
             {
-                "center_lats": center_lats,
-                "center_lons": center_lons,
-                "min_lats": min_lats,
-                "min_lons": min_lons,
-                "max_lats": max_lats,
-                "max_lons": max_lons,
+                "center_lat": center_lats,
+                "center_lon": center_lons,
+                "min_lat": min_lats,
+                "min_lon": min_lons,
+                "max_lat": max_lats,
+                "max_lon": max_lons,
             }
         )
         .with_columns(
             (
-                (pl.col("center_lats") - pl.col("center_lats").mean())
-                / pl.col("center_lats").std()
-            ).alias("z_center_lats"),
+                (pl.col("center_lat") - pl.col("center_lat").mean())
+                / pl.col("center_lat").std()
+            ).alias("z_center_lat"),
             (
-                (pl.col("center_lons") - pl.col("center_lons").mean())
-                / pl.col("center_lons").std()
-            ).alias("z_center_lons"),
+                (pl.col("center_lon") - pl.col("center_lon").mean())
+                / pl.col("center_lon").std()
+            ).alias("z_center_lon"),
         )
         .filter(
-            (pl.col("z_center_lats") < threshold)
-            & (pl.col("z_center_lons") < threshold)
+            (pl.col("z_center_lat") < threshold) & (pl.col("z_center_lon") < threshold)
         )
     )
     return {
-        "center_lat": df.get_column("center_lats").mean(),
-        "center_lon": df.get_column("center_lons").mean(),
-        "min_lat": df.get_column("min_lats").min(),
-        "min_lon": df.get_column("min_lons").min(),
-        "max_lat": df.get_column("max_lats").max(),
-        "max_lon": df.get_column("max_lons").max(),
+        "center_lat": df.get_column("center_lat").mean(),
+        "center_lon": df.get_column("center_lon").mean(),
+        "min_lat": df.get_column("min_lat").min(),
+        "min_lon": df.get_column("min_lon").min(),
+        "max_lat": df.get_column("max_lat").max(),
+        "max_lon": df.get_column("max_lon").max(),
     }
 
 
@@ -171,7 +179,7 @@ def create_map(
     lat_range = map_coords["max_lat"] - map_coords["min_lat"]
     lon_range = map_coords["max_lon"] - map_coords["min_lon"]
     max_range = max(lat_range, lon_range)
-    zoom = 8 - log2(max_range + 1e-6)
+    zoom = 7.7 - log2(max_range + 1e-6)
     # Update figure layout
     fig.update_layout(
         margin={"l": 0, "t": 0, "b": 0, "r": 0},

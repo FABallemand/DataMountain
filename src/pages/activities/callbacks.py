@@ -72,11 +72,6 @@ def register_callbacks():
                             [
                                 dmc.Badge(row[29], color=SPORT_TYPE_COLORS[row[29]]),
                                 dmc.Title(row[26], order=3),
-                                # dmc.Text(
-                                #     "Description?",
-                                #     size="sm",
-                                #     c="dimmed",
-                                # ),
                                 dmc.Anchor(
                                     dmc.Button(
                                         "Go to report",

@@ -4,6 +4,7 @@ This module contains the callbacks of the Home page.
 
 import datetime
 
+import plotly.express as px
 import plotly.graph_objects as go
 import polars as pl
 from dash import Input, Output, callback
@@ -18,7 +19,9 @@ def register_callbacks():
     Register callbacks of the Home page.
     """
 
-    def create_dist_graph(df):
+    ## Graphs #########################################################
+
+    def create_dist_plot(df):
         sport_types = df.get_column("sport_type").unique().sort().to_list()
         # Create figure
         fig = go.Figure()
@@ -44,7 +47,7 @@ def register_callbacks():
         )
         return fig
 
-    def create_time_graph(df):
+    def create_time_plot(df):
         sport_types = df.get_column("sport_type").unique().sort().to_list()
         # Create figure
         fig = go.Figure()
@@ -70,7 +73,7 @@ def register_callbacks():
         )
         return fig
 
-    def create_ele_graph(df):
+    def create_ele_plot(df):
         sport_types = df.get_column("sport_type").unique().sort().to_list()
         # Create figure
         fig = go.Figure()
@@ -96,6 +99,102 @@ def register_callbacks():
         )
         return fig
 
+    ## Sport Type Bargraph ############################################
+
+    def create_dist_bar(df, color="sport_type"):
+        return px.bar(
+            df,
+            x="year_week",
+            y="distance",
+            color=color,
+            color_discrete_map=SPORT_TYPE_COLORS,
+            barmode="group",
+            text_auto=".2f",
+        ).update_layout(
+            xaxis={"title": None, "type": "category"},
+            yaxis={"title": "Distance"},
+            barcornerradius=15,
+        )
+
+    def create_time_bar(df, color="sport_type"):
+        return px.bar(
+            df,
+            x="year_week",
+            y="elapsed_time",
+            color=color,
+            color_discrete_map=SPORT_TYPE_COLORS,
+            barmode="group",
+            text_auto=".2f",
+        ).update_layout(
+            xaxis={"title": None, "type": "category"},
+            yaxis={"title": "Elapsed Time"},
+            barcornerradius=15,
+        )
+
+    def create_ele_bar(df, color="sport_type"):
+        return px.bar(
+            df,
+            x="year_week",
+            y="total_elevation_gain",
+            color=color,
+            color_discrete_map=SPORT_TYPE_COLORS,
+            barmode="group",
+            text_auto=".2f",
+        ).update_layout(
+            xaxis={"title": None, "type": "category"},
+            yaxis={"title": "Elevation Gain"},
+            barcornerradius=15,
+        )
+
+    ## Type Bargraph ##################################################
+
+    def create_dist_bar_type(df):
+        return px.histogram(
+            df,
+            x="year_week",
+            y="distance",
+            color="type",
+            color_discrete_map=SPORT_TYPE_COLORS,
+            barmode="group",
+            text_auto=".2f",
+        ).update_layout(
+            xaxis={"title": None, "type": "category"},
+            yaxis={"title": "Distance"},
+            barcornerradius=15,
+        )
+
+    def create_time_bar_type(df):
+        return px.histogram(
+            df,
+            x="year_week",
+            y="elapsed_time",
+            color="type",
+            color_discrete_map=SPORT_TYPE_COLORS,
+            barmode="group",
+            text_auto=".2f",
+        ).update_layout(
+            xaxis={"title": None, "type": "category"},
+            yaxis={"title": "Elapsed Time"},
+            barcornerradius=15,
+        )
+
+    def create_ele_bar_type(df):
+        return px.histogram(
+            df,
+            x="year_week",
+            y="total_elevation_gain",
+            color="type",
+            color_discrete_map=SPORT_TYPE_COLORS,
+            barmode="group",
+            text_auto=".2f",
+        ).update_layout(
+            xaxis={"title": None, "type": "category"},
+            yaxis={"title": "Elevation Gain"},
+            barcornerradius=15,
+        )
+
+    ## Callback #######################################################
+
     @callback(
         [
             Output({"page": "home", "component": "dist-graph"}, "figure"),
@@ -107,10 +206,11 @@ def register_callbacks():
             Input({"page": "home", "component": "sport-type-select"}, "value"),
             Input({"page": "home", "component": "start-date-picker"}, "value"),
             Input({"page": "home", "component": "stop-date-picker"}, "value"),
+            Input({"page": "home", "component": "graph-type-control"}, "value"),
             Input("activities-store", "data"),
         ],
     )
-    def update_graphs(_, sport_types, start_date, stop_date, data):
+    def update_graphs(_, sport_types, start_date, stop_date, graph_type, data):
         """
         Update the graphs.
         """
@@ -132,8 +232,28 @@ def register_callbacks():
             )
         )
 
-        return (
-            create_dist_graph(weekly_df),
-            create_time_graph(weekly_df),
-            create_ele_graph(weekly_df),
-        )
+        if graph_type == "plot":
+            return (
+                create_dist_plot(weekly_df),
+                create_time_plot(weekly_df),
+                create_ele_plot(weekly_df),
+            )
+        if graph_type == "bar_type":
+            return (
+                create_dist_bar_type(weekly_df),
+                create_time_bar_type(weekly_df),
+                create_ele_bar_type(weekly_df),
+            )
+        if graph_type == "bar_type_sport_type":
+            return (
+                create_dist_bar(weekly_df, "type"),
+                create_time_bar(weekly_df, "type"),
+                create_ele_bar(weekly_df, "type"),
+            )
+        if graph_type == "bar_sport_type":
+            return (
+                create_dist_bar(weekly_df),
+                create_time_bar(weekly_df),
+                create_ele_bar(weekly_df),
+            )
+        return None, None, None

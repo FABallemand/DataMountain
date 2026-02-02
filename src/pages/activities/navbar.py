@@ -13,7 +13,11 @@ def ActivitiesNavbar():
     """
     Create the layout of the Activities page navbar.
     """
-    return [
-        dmc.Title("Activities", order=1),
-        PlotlyMapLayerSelect({"page": "activities", "component": "map-layer-select"}),
-    ]
+    return dmc.Stack(
+        [
+            dmc.Title("Activities", order=1),
+            PlotlyMapLayerSelect(
+                {"page": "activities", "component": "map-layer-select"}
+            ),
+        ]
+    )
