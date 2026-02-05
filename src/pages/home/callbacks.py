@@ -13,6 +13,22 @@ from dash.exceptions import PreventUpdate
 from constants.colors import SPORT_TYPE_COLORS
 from utils.dataframes import create_weekly_df
 
+SPORT_TYPE_ORDER = [
+    # Running
+    "Run",
+    "TrailRun",
+    # Cycling
+    "Ride",
+    "GravelBikeRide",
+    "MoutainBikeRide",
+    # Walk
+    "Walk",
+    "Hike",
+    "Snowshoe",
+    # Other
+    "Swim",
+]
+
 
 def register_callbacks():
     """
@@ -109,6 +125,7 @@ def register_callbacks():
             color=color,
             color_discrete_map=SPORT_TYPE_COLORS,
             barmode="group",
+            category_orders={color: SPORT_TYPE_ORDER},
             text_auto=".2f",
         ).update_layout(
             xaxis={"title": None, "type": "category"},
@@ -124,6 +141,7 @@ def register_callbacks():
             color=color,
             color_discrete_map=SPORT_TYPE_COLORS,
             barmode="group",
+            category_orders={color: SPORT_TYPE_ORDER},
             text_auto=".2f",
         ).update_layout(
             xaxis={"title": None, "type": "category"},
@@ -139,6 +157,7 @@ def register_callbacks():
             color=color,
             color_discrete_map=SPORT_TYPE_COLORS,
             barmode="group",
+            category_orders={color: SPORT_TYPE_ORDER},
             text_auto=".2f",
         ).update_layout(
             xaxis={"title": None, "type": "category"},
@@ -156,6 +175,7 @@ def register_callbacks():
             color="type",
             color_discrete_map=SPORT_TYPE_COLORS,
             barmode="group",
+            category_orders={"type": SPORT_TYPE_ORDER},
             text_auto=".2f",
         ).update_layout(
             xaxis={"title": None, "type": "category"},
@@ -171,6 +191,7 @@ def register_callbacks():
             color="type",
             color_discrete_map=SPORT_TYPE_COLORS,
             barmode="group",
+            category_orders={"type": SPORT_TYPE_ORDER},
             text_auto=".2f",
         ).update_layout(
             xaxis={"title": None, "type": "category"},
@@ -186,6 +207,7 @@ def register_callbacks():
             color="type",
             color_discrete_map=SPORT_TYPE_COLORS,
             barmode="group",
+            category_orders={"type": SPORT_TYPE_ORDER},
             text_auto=".2f",
         ).update_layout(
             xaxis={"title": None, "type": "category"},
