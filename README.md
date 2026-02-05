@@ -34,5 +34,7 @@ DataMountain contains 5 pages:
 - Visualise your past activities on a map in the **Map** page.
 - The **Athlete** page lets you access your personnal and gear statistics.
 
+![](img/Home.png)
+
 ## 👤 Author
 - Fabien ALLEMAND
