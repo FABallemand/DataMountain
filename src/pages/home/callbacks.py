@@ -37,7 +37,12 @@ def register_callbacks():
 
     ## Graphs #########################################################
 
-    def create_dist_plot(df):
+    def create_plot(df, y):
+        hovertemplates = {
+            "distance": "Year-Week: %{x}<br>Distance: %{y:.1f} km",
+            "elapsed_time": "Year-Week: %{x}<br>Elapsed time: %{y:.1f} min",
+            "total_elevation_gain": "Year-Week: %{x}<br>Elevation gain: %{y:.1f} m",
+        }
         sport_types = df.get_column("sport_type").unique().sort().to_list()
         # Create figure
         fig = go.Figure()
@@ -46,60 +51,8 @@ def register_callbacks():
             fig.add_trace(
                 go.Scatter(
                     x=df_sport["year_week"].to_list(),
-                    y=df_sport["distance"].to_list(),
-                    hovertemplate="Year-Week: %{x}<br>Distance: %{y:.1f} km",
-                    mode="lines+markers",
-                    name=sport_type,
-                    stackgroup="one",
-                    line={"color": SPORT_TYPE_COLORS[sport_type]},
-                )
-            )
-        fig.update_layout(
-            xaxis={
-                "type": "category",
-                "categoryorder": "array",
-                "categoryarray": df.get_column("year_week").to_list(),
-            }
-        )
-        return fig
-
-    def create_time_plot(df):
-        sport_types = df.get_column("sport_type").unique().sort().to_list()
-        # Create figure
-        fig = go.Figure()
-        for sport_type in sport_types:
-            df_sport = df.filter(pl.col("sport_type") == sport_type)
-            fig.add_trace(
-                go.Scatter(
-                    x=df_sport["year_week"].to_list(),
-                    y=df_sport["elapsed_time"].to_list(),
-                    hovertemplate="Year-Week: %{x}<br>Elapsed time: %{y:.1f} min",
-                    mode="lines+markers",
-                    name=sport_type,
-                    stackgroup="one",
-                    line={"color": SPORT_TYPE_COLORS[sport_type]},
-                )
-            )
-        fig.update_layout(
-            xaxis={
-                "type": "category",
-                "categoryorder": "array",
-                "categoryarray": df.get_column("year_week").to_list(),
-            }
-        )
-        return fig
-
-    def create_ele_plot(df):
-        sport_types = df.get_column("sport_type").unique().sort().to_list()
-        # Create figure
-        fig = go.Figure()
-        for sport_type in sport_types:
-            df_sport = df.filter(pl.col("sport_type") == sport_type)
-            fig.add_trace(
-                go.Scatter(
-                    x=df_sport["year_week"].to_list(),
-                    y=df_sport["total_elevation_gain"].to_list(),
-                    hovertemplate="Year-Week: %{x}<br>Elevation gain: %{y:.1f} m",
+                    y=df_sport[y].to_list(),
+                    hovertemplate=hovertemplates[y],
                     mode="lines+markers",
                     name=sport_type,
                     stackgroup="one",
@@ -117,103 +70,61 @@ def register_callbacks():
 
     ## Sport Type Bargraph ############################################
 
-    def create_dist_bar(df, color="sport_type"):
-        return px.bar(
+    def create_bar(df, y, y_title, color="sport_type"):
+        year_weeks = df.get_column("year_week").unique().to_list()
+        fig = px.bar(
             df,
             x="year_week",
-            y="distance",
+            y=y,
             color=color,
             color_discrete_map=SPORT_TYPE_COLORS,
             barmode="group",
             category_orders={color: SPORT_TYPE_ORDER},
             text_auto=".2f",
         ).update_layout(
-            xaxis={"title": None, "type": "category"},
-            yaxis={"title": "Distance"},
+            xaxis={
+                "title": None,
+                "type": "category",
+                "categoryorder": "array",
+                "categoryarray": year_weeks,
+            },
+            yaxis={"title": y_title},
             barcornerradius=15,
         )
-
-    def create_time_bar(df, color="sport_type"):
-        return px.bar(
-            df,
-            x="year_week",
-            y="elapsed_time",
-            color=color,
-            color_discrete_map=SPORT_TYPE_COLORS,
-            barmode="group",
-            category_orders={color: SPORT_TYPE_ORDER},
-            text_auto=".2f",
-        ).update_layout(
-            xaxis={"title": None, "type": "category"},
-            yaxis={"title": "Elapsed Time"},
-            barcornerradius=15,
-        )
-
-    def create_ele_bar(df, color="sport_type"):
-        return px.bar(
-            df,
-            x="year_week",
-            y="total_elevation_gain",
-            color=color,
-            color_discrete_map=SPORT_TYPE_COLORS,
-            barmode="group",
-            category_orders={color: SPORT_TYPE_ORDER},
-            text_auto=".2f",
-        ).update_layout(
-            xaxis={"title": None, "type": "category"},
-            yaxis={"title": "Elevation Gain"},
-            barcornerradius=15,
-        )
+        for i in range(len(year_weeks) - 1):
+            fig.add_vline(
+                x=i + 0.5, line_width=1, line_dash="dot", line_color="gray", opacity=0.4
+            )
+        return fig
 
     ## Type Bargraph ##################################################
 
-    def create_dist_bar_type(df):
-        return px.histogram(
+    def create_bar_type(df, y, y_title):
+        year_weeks = df.get_column("year_week").unique().to_list()
+        fig = px.histogram(
             df,
             x="year_week",
-            y="distance",
+            y=y,
             color="type",
             color_discrete_map=SPORT_TYPE_COLORS,
             barmode="group",
             category_orders={"type": SPORT_TYPE_ORDER},
             text_auto=".2f",
         ).update_layout(
-            xaxis={"title": None, "type": "category"},
-            yaxis={"title": "Distance"},
+            xaxis={
+                "title": None,
+                "type": "category",
+                "categoryorder": "array",
+                "categoryarray": year_weeks,
+            },
+            yaxis={"title": y_title},
             barcornerradius=15,
         )
-
-    def create_time_bar_type(df):
-        return px.histogram(
-            df,
-            x="year_week",
-            y="elapsed_time",
-            color="type",
-            color_discrete_map=SPORT_TYPE_COLORS,
-            barmode="group",
-            category_orders={"type": SPORT_TYPE_ORDER},
-            text_auto=".2f",
-        ).update_layout(
-            xaxis={"title": None, "type": "category"},
-            yaxis={"title": "Elapsed Time"},
-            barcornerradius=15,
-        )
-
-    def create_ele_bar_type(df):
-        return px.histogram(
-            df,
-            x="year_week",
-            y="total_elevation_gain",
-            color="type",
-            color_discrete_map=SPORT_TYPE_COLORS,
-            barmode="group",
-            category_orders={"type": SPORT_TYPE_ORDER},
-            text_auto=".2f",
-        ).update_layout(
-            xaxis={"title": None, "type": "category"},
-            yaxis={"title": "Elevation Gain"},
-            barcornerradius=15,
-        )
+        for i in range(len(year_weeks) - 1):
+            fig.add_vline(
+                x=i + 0.5, line_width=1, line_dash="dot", line_color="gray", opacity=0.4
+            )
+        return fig
 
     ## Callback #######################################################
 
@@ -256,26 +167,26 @@ def register_callbacks():
 
         if graph_type == "plot":
             return (
-                create_dist_plot(weekly_df),
-                create_time_plot(weekly_df),
-                create_ele_plot(weekly_df),
+                create_plot(weekly_df, "distance"),
+                create_plot(weekly_df, "elapsed_time"),
+                create_plot(weekly_df, "total_elevation_gain"),
             )
         if graph_type == "bar_type":
             return (
-                create_dist_bar_type(weekly_df),
-                create_time_bar_type(weekly_df),
-                create_ele_bar_type(weekly_df),
+                create_bar_type(weekly_df, "distance", "Distance"),
+                create_bar_type(weekly_df, "elapsed_time", "Elapsed Time"),
+                create_bar_type(weekly_df, "total_elevation_gain", "Elevation Gain"),
             )
         if graph_type == "bar_type_sport_type":
             return (
-                create_dist_bar(weekly_df, "type"),
-                create_time_bar(weekly_df, "type"),
-                create_ele_bar(weekly_df, "type"),
+                create_bar(weekly_df, "distance", "Distance", "type"),
+                create_bar(weekly_df, "elapsed_time", "Elapsed Time", "type"),
+                create_bar(weekly_df, "total_elevation_gain", "Elevation Gain", "type"),
             )
         if graph_type == "bar_sport_type":
             return (
-                create_dist_bar(weekly_df),
-                create_time_bar(weekly_df),
-                create_ele_bar(weekly_df),
+                create_bar(weekly_df, "distance", "Distance"),
+                create_bar(weekly_df, "elapsed_time", "Elapsed Time"),
+                create_bar(weekly_df, "total_elevation_gain", "Elevation Gain"),
             )
         return None, None, None
