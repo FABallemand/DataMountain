@@ -3,10 +3,11 @@ This module contains the callbacks of the Athelete page.
 """
 
 import datetime
-import time
 
 import dash_mantine_components as dmc
 from dash import Input, Output, callback
+
+from utils.dates import duration_to_string
 
 
 def create_location_string(data):
@@ -60,37 +61,21 @@ def create_activity_totals_rows(data, activity):
                     "Moving / Elapsed Time",
                 ),
                 dmc.TableTd(
-                    time.strftime(
-                        "%H:%M:%S",
-                        time.gmtime(data[f"recent_{activity}_totals"]["moving_time"]),
-                    )
+                    duration_to_string(data[f"recent_{activity}_totals"]["moving_time"])
                     + " / "
-                    + time.strftime(
-                        "%H:%M:%S",
-                        time.gmtime(data[f"recent_{activity}_totals"]["elapsed_time"]),
+                    + duration_to_string(
+                        data[f"recent_{activity}_totals"]["elapsed_time"]
                     )
                 ),
                 dmc.TableTd(
-                    time.strftime(
-                        "%H:%M:%S",
-                        time.gmtime(data[f"ytd_{activity}_totals"]["moving_time"]),
-                    )
+                    duration_to_string(data[f"ytd_{activity}_totals"]["moving_time"])
                     + " / "
-                    + time.strftime(
-                        "%H:%M:%S",
-                        time.gmtime(data[f"ytd_{activity}_totals"]["elapsed_time"]),
-                    )
+                    + duration_to_string(data[f"ytd_{activity}_totals"]["elapsed_time"])
                 ),
                 dmc.TableTd(
-                    time.strftime(
-                        "%H:%M:%S",
-                        time.gmtime(data[f"all_{activity}_totals"]["moving_time"]),
-                    )
+                    duration_to_string(data[f"all_{activity}_totals"]["moving_time"])
                     + " / "
-                    + time.strftime(
-                        "%H:%M:%S",
-                        time.gmtime(data[f"all_{activity}_totals"]["elapsed_time"]),
-                    )
+                    + duration_to_string(data[f"all_{activity}_totals"]["elapsed_time"])
                 ),
             ]
         ),
@@ -122,7 +107,7 @@ def create_totals_table(data):
                 dmc.TableTr(
                     [
                         dmc.TableTh(""),
-                        dmc.TableTh("Recent"),
+                        dmc.TableTh("Recent (last 4 weeks)"),
                         dmc.TableTh(f"{datetime.datetime.now().date().year}"),
                         dmc.TableTh("All Time"),
                     ]

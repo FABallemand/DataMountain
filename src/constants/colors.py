@@ -33,7 +33,8 @@ SPORT_TYPE_COLORS = {
     "Snowshoe": SNOWSHOE,
     # Other
     "Swim": SWIM,
-}
+}  # TODO add support for more sports
+# https://support.strava.com/hc/en-us/articles/216919407-Supported-Sport-Types-on-Strava
 
 
 # Colormaps
