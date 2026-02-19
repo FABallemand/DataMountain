@@ -8,6 +8,8 @@ import polars as pl
 from dash import Input, Output, State, callback
 from dash.exceptions import PreventUpdate
 
+from utils.metrics import pace_to_str, speed_to_pace
+
 
 def register_callbacks():
     """
@@ -127,13 +129,19 @@ def register_callbacks():
                     [
                         "Average Pace",
                         create_stat(
-                            60 / (activity_data["average_speed"].item() * 3.6), "min/km"
+                            pace_to_str(
+                                speed_to_pace(activity_data["average_speed"].item())
+                            ),
+                            "/km",
                         ),
                     ],
                     [
                         "Max Pace",
                         create_stat(
-                            60 / (activity_data["max_speed"].item() * 3.6), "min/km"
+                            pace_to_str(
+                                speed_to_pace(activity_data["max_speed"].item())
+                            ),
+                            "/km",
                         ),
                     ],
                     [
@@ -146,7 +154,13 @@ def register_callbacks():
                         "Max Speed",
                         create_stat(activity_data["max_speed"].item() * 3.6, "km/h"),
                     ],
-                    ["Average Cadence", activity_data["average_cadence"].item()],
+                    [
+                        "Average Cadence",
+                        create_stat(
+                            activity_data["average_cadence"].item(),
+                            "ppm" if activity_data["type"].item() in ["Run"] else "rpm",
+                        ),
+                    ],
                     [
                         "Average Heartrate",
                         create_stat(activity_data["average_heartrate"].item(), "bpm"),
@@ -189,9 +203,14 @@ def register_callbacks():
                     ["Location Country", activity_data["location_country"].item()],
                     [
                         "Start Coordinates",
-                        activity_data["start_latlng"].item().to_list(),
+                        f"{activity_data['start_latlng'].item().to_list()[0]}, "
+                        f"{activity_data['start_latlng'].item().to_list()[1]}",
                     ],
-                    ["End Coordinates", activity_data["end_latlng"].item().to_list()],
+                    [
+                        "End Coordinates",
+                        f"{activity_data['end_latlng'].item().to_list()[0]}, "
+                        f"{activity_data['end_latlng'].item().to_list()[1]}",
+                    ],
                     ["Elevation Low", activity_data["elev_low"].item()],
                     ["Elevation High", activity_data["elev_high"].item()],
                 ]
