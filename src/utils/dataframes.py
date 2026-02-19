@@ -91,7 +91,13 @@ def create_weekly_df(
         )
         .filter(
             (pl.col("sport_type").is_in(sport_types))
-            & (pl.col("start_date_local").is_between(start_date, stop_date))
+            & (
+                pl.col("start_date_local").is_between(
+                    start_date,
+                    stop_date
+                    + datetime.timedelta(days=1),  # Add one day to include stop_date
+                )
+            )
         )
     )
 

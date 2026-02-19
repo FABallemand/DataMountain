@@ -71,7 +71,7 @@ def register_callbacks():
     ## Sport Type Bargraph ############################################
 
     def create_bar(df, y, y_title, color="sport_type"):
-        year_weeks = df.get_column("year_week").unique().to_list()
+        year_weeks = df.get_column("year_week").unique().sort().to_list()
         fig = px.bar(
             df,
             x="year_week",
@@ -100,7 +100,7 @@ def register_callbacks():
     ## Type Bargraph ##################################################
 
     def create_bar_type(df, y, y_title):
-        year_weeks = df.get_column("year_week").unique().to_list()
+        year_weeks = df.get_column("year_week").unique().sort().to_list()
         fig = px.histogram(
             df,
             x="year_week",
